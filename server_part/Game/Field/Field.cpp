@@ -38,7 +38,7 @@ void Field::MakeMove(int position) {
 }
 
 bool Field::IsCombinationWins(std::vector<int>& combination) {
-  if (current_field[combination[0]] != 'X' || current_field[combination[0]] != '0') {
+  if (current_field[combination[0]] != 'X' && current_field[combination[0]] != '0') {
     return false;
   }
   return current_field[combination[0]] == current_field[combination[1]] && current_field[combination[2]] == current_field[combination[1]];

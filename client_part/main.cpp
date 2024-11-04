@@ -31,12 +31,21 @@ int main() {
 
   while (true) {
     char buffer[1024] = {0};
-    int valread = read(sock, buffer, 1024);
+    ssize_t valread = read(sock, buffer, sizeof(buffer) - 1);
     if (valread > 0) {
       std::cout << buffer;
-    }
-    if (buffer == "The server has disconnected.") {
-      break;
+      std::string message(buffer);
+
+      if (message.find("Enter your turn:") != std::string::npos) {
+        std::string position;
+        std::cin >> position;
+
+        send(sock, position.c_str(), position.size(), 0);
+      }
+
+      if (message.find("The server has disconnected.") != std::string::npos) {
+        break;
+      }
     }
   }
 }

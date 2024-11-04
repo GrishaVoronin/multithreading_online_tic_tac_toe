@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <cstring>
 #include <thread>
+#include <iostream>
 
 Game::~Game() {
   close(players_sockets_[0]);
@@ -51,6 +52,7 @@ void Game::StartGame() {
   SendMessage(player1_message, PlayersNumber::player1);
   const char* player2_message = "Starting the game...\nYou are playing noughts (0). Good luck!\n";
   SendMessage(player2_message, PlayersNumber::player2);
+  MakeMove();
 }
 
 void Game::SendWinningMessage() {
@@ -101,16 +103,16 @@ void Game::MoveMessages() {
 void Game::AskForMove() {
   const char* message = "Enter your turn:\n";
   SendMessage(message, player_move_);
-  char buffer[1];
-  int valread = read(players_sockets_[player_move_], buffer, 1);
+  char buffer[1024];
+  ssize_t valread = read(players_sockets_[player_move_], buffer, 1024);
   if (valread > 0) {
-    int position = buffer[0] - '0';
+    int position = atoi(buffer);
     if (field_.IsMovePossible(position)) {
       field_.MakeMove(position);
-    } else {
-      const char* not_valid_pos = "Not valid position. Try again!\n";
-      SendMessage(not_valid_pos, player_move_);
-      AskForMove();
+      return;
     }
+    const char* not_valid_pos = "Not valid position. Try again!\n";
+    SendMessage(not_valid_pos, player_move_);
+    AskForMove();
   }
 }
