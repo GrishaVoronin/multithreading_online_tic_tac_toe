@@ -3,10 +3,12 @@ project(server_part)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(server_part main.cpp
+add_executable(server main.cpp
         Game/Field/Field.hpp
         Game/Field/Field.cpp
         Game/Game.hpp
         Game/Game.cpp
         Connector/Connector.hpp
-        Connector/Connector.cpp)
+        Connector/Connector.cpp
+        Server.hpp
+        Server.cpp)

@@ -10,6 +10,7 @@ void Client::CreateConnection() {
 
   if ((sock_ = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
     std::cerr << "Socket creation error" << std::endl;
+    exit(EXIT_FAILURE);
   }
 
   serv_addr.sin_family = AF_INET;
@@ -17,10 +18,12 @@ void Client::CreateConnection() {
 
   if (inet_pton(AF_INET, ip_.c_str(), &serv_addr.sin_addr) <= 0) {
     std::cerr << "Invalid address or Address not supported" << std::endl;
+    exit(EXIT_FAILURE);
   }
 
   if (connect(sock_, reinterpret_cast<sockaddr*>(&serv_addr), sizeof(serv_addr)) < 0) {
     std::cerr << "Connection failed" << std::endl;
+    exit(EXIT_FAILURE);
   }
 }
 
