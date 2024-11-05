@@ -23,7 +23,7 @@ void Field::ChangeSymbol() {
 }
 
 
-bool Field::IsMovePossible(int position) {
+bool Field::IsMovePossible(int position) const {
   --position;
   if (position < 0 || position > 8) {
     return false;
@@ -37,14 +37,14 @@ void Field::MakeMove(int position) {
   ChangeSymbol();
 }
 
-bool Field::IsCombinationWins(std::vector<int>& combination) {
+bool Field::IsCombinationWins(const std::vector<int>& combination) const {
   if (current_field[combination[0]] != Symbol::cross && current_field[combination[0]] != Symbol::nought) {
     return false;
   }
   return current_field[combination[0]] == current_field[combination[1]] && current_field[combination[2]] == current_field[combination[1]];
 }
 
-bool Field::IsWinning() {
+bool Field::IsWinning() const {
   for (auto& combination: winning_combinations) {
     if (IsCombinationWins(combination)) {
       return true;
@@ -53,7 +53,7 @@ bool Field::IsWinning() {
   return false;
 }
 
-bool Field::IsEnd() {
+bool Field::IsEnd() const {
   for (int i = 0; i < 9; ++i) {
     if (current_field[i] != Symbol::cross && current_field[i] != Symbol::nought) {
       return false;
@@ -62,7 +62,7 @@ bool Field::IsEnd() {
   return true;
 }
 
-std::string Field::GetField() {
+std::string Field::GetField() const {
   std::string field;
   for (size_t line = 0; line < 3; ++line) {
     for (size_t row = 0; row < 3; ++row) {

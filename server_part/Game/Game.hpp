@@ -13,18 +13,17 @@ private:
     player1 = 0,
     player2 = 1
   };
-  PlayersNumber GetNotPlayerMove();
+  PlayersNumber GetNotPlayerMove() const;
   void ChangePlayerMove();
-  std::string GetField();
-  void SendMessage(const char* message, int player_number);
-  void SendField();
-  void SendEndGameMessage();
-  bool IsFinished();
-  void SendWinningMessage();
-  void SendDrawMessage();
+  std::string GetField() const;
+  void SendMessage(const char* message, int player_number) const;
+  void SendField() const;
+  void SendEndGameMessage() const;
+  bool IsFinished() const;
+  void SendWinningMessage() const;
+  void SendDrawMessage() const;
+  void Step();
   void MakeMove();
-  void MoveMessages();
-  void AskForMove();
 
   std::vector<int> players_sockets_;
   PlayersNumber player_move_ = PlayersNumber::player2;

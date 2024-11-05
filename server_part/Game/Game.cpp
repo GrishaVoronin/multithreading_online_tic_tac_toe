@@ -11,7 +11,7 @@ Game::~Game() {
   close(players_sockets_[1]);
 }
 
-Game::PlayersNumber Game::GetNotPlayerMove() {
+Game::PlayersNumber Game::GetNotPlayerMove() const {
   if (player_move_ == player1) {
     return player2;
   }
@@ -19,7 +19,7 @@ Game::PlayersNumber Game::GetNotPlayerMove() {
 }
 
 
-void Game::SendMessage(const char* message, int player_number) {
+void Game::SendMessage(const char* message, int player_number) const {
   send(players_sockets_[player_number], message, strlen(message), 0);
 }
 
@@ -31,17 +31,17 @@ void Game::ChangePlayerMove() {
   }
 }
 
-std::string Game::GetField() {
+std::string Game::GetField() const {
   return field_.GetField();
 }
 
-void Game::SendField() {
+void Game::SendField() const {
   std::string message = "The board currently is:\n" + field_.GetField();
   SendMessage(message.c_str(), PlayersNumber::player1);
   SendMessage(message.c_str(), PlayersNumber::player2);
 }
 
-void Game::SendEndGameMessage() {
+void Game::SendEndGameMessage() const {
   const char* message = "The server has disconnected.\n";
   SendMessage(message, PlayersNumber::player1);
   SendMessage(message, PlayersNumber::player2);
@@ -52,10 +52,10 @@ void Game::StartGame() {
   SendMessage(player1_message, PlayersNumber::player1);
   const char* player2_message = "Starting the game...\nYou are playing noughts (0). Good luck!\n";
   SendMessage(player2_message, PlayersNumber::player2);
-  MakeMove();
+  Step();
 }
 
-void Game::SendWinningMessage() {
+void Game::SendWinningMessage() const {
   const char* win_message = "Congratulations! You won!\n";
   const char* lose_message = "Sorry! You loose!\n";
   SendMessage(win_message, player_move_);
@@ -63,7 +63,7 @@ void Game::SendWinningMessage() {
   SendEndGameMessage();
 }
 
-void Game::SendDrawMessage() {
+void Game::SendDrawMessage() const {
   const char* message = "Draw\n";
   SendMessage(message, player1);
   SendMessage(message, player2);
@@ -71,7 +71,7 @@ void Game::SendDrawMessage() {
 }
 
 
-bool Game::IsFinished() {
+bool Game::IsFinished() const {
   if (field_.IsWinning()) {
     SendWinningMessage();
     return true;
@@ -83,24 +83,20 @@ bool Game::IsFinished() {
   return false;
 }
 
-void Game::MakeMove() {
+void Game::Step() {
   SendField();
   if (IsFinished()) {
     return;
   }
   ChangePlayerMove();
-  MoveMessages();
   MakeMove();
+  Step();
 }
 
-void Game::MoveMessages() {
-  const char* message = "Please wait for the other player's turn...\n";
-  SendMessage(message, GetNotPlayerMove());
-  AskForMove();
-}
+void Game::MakeMove() {
+  const char* waiting_message = "Please wait for the other player's turn...\n";
+  SendMessage(waiting_message, GetNotPlayerMove());
 
-
-void Game::AskForMove() {
   const char* message = "Enter your turn:\n";
   SendMessage(message, player_move_);
   char buffer[1024];
@@ -113,6 +109,6 @@ void Game::AskForMove() {
     }
     const char* not_valid_pos = "Not valid position. Try again!\n";
     SendMessage(not_valid_pos, player_move_);
-    AskForMove();
+    MakeMove();
   }
 }

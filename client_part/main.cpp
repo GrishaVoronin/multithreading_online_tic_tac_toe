@@ -24,6 +24,9 @@ int main(int argc, char* argv[]) {
   std::string ip = address.first;
   int port = address.second;
 
+  std::cout << "TicTacToe client version 1.0.0\n";
+  std::cout << "Connecting server at " << ip << ':' << port << "...\n\n";
+
   Client client(ip, port);
   client.CreateConnection();
   client.StartReceivingData();

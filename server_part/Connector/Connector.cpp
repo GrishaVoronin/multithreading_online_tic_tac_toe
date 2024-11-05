@@ -39,14 +39,14 @@ void Connector::StartNewGame(int second_player_socket) {
   game_thread.detach();  // Detach to run independently
 }
 
-void Connector::SendMessageToFirstPlayer() {
+void Connector::SendMessageToFirstPlayer() const {
   const char* message =
       "Welcome to the TicTacToe server version 1.0.0!\nYou are the first "
       "player!\nPlease wait for the other player to connect...\n";
   send(first_player_socket_, message, strlen(message), 0);
 }
 
-void Connector::SendMessageToSecondPlayer(int socket) {
+void Connector::SendMessageToSecondPlayer(int socket) const {
   const char* message = "You are the second player!\n";
   send(socket, message, strlen(message), 0);
 }
