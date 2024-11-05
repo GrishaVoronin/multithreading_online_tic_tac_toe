@@ -7,6 +7,7 @@
 #include <thread>
 
 #include "Game/Game.hpp"
+#include "Connector/Connector.hpp"
 
 #define PORT 1234
 
@@ -38,10 +39,11 @@ int main() {
 
   std::cout << "Server is listening on port " << PORT << "..." << std::endl;
 
-  int player1_socket;
-  player1_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addrlen);
-  int player2_socket;
-  player2_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addrlen);
-  Game new_game(player1_socket, player2_socket);
-  new_game.StartGame();
+  Connector connector;
+
+  while (true) {
+    int new_player_socket;
+    new_player_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addrlen);
+    connector.AddPlayer(new_player_socket);
+  }
 }

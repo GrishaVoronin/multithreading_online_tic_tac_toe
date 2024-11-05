@@ -7,4 +7,6 @@ add_executable(server_part main.cpp
         Game/Field/Field.hpp
         Game/Field/Field.cpp
         Game/Game.hpp
-        Game/Game.cpp)
+        Game/Game.cpp
+        Connector/Connector.hpp
+        Connector/Connector.cpp)

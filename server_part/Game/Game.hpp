@@ -4,7 +4,7 @@
 
 class Game {
 public:
-  Game(int player1_socket, int player2_socket) : players_sockets_({player1_socket, player2_socket}) {}
+  Game(int player1_socket, int player2_socket) : players_sockets_({player1_socket, player2_socket}), field_(Field()) {}
   ~Game();
   void StartGame();
 
