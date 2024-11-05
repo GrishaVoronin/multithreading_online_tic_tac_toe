@@ -1,51 +1,30 @@
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <unistd.h>
-
-#include <cstring>
 #include <iostream>
+#include "Client.hpp"
 
-#define PORT 1234  // Порт для подключения
+std::pair<std::string, int> ParseIpAndPort(int argc, char* argv[]) {
+  std::string ip_address;
+  int port;
 
-int main() {
-  int sock = 0;
-  struct sockaddr_in serv_addr;
+  for (int i = 1; i < argc; ++i) {
+    std::string arg = argv[i];
 
-  if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-    std::cerr << "Socket creation error" << std::endl;
-    return -1;
-  }
-
-  serv_addr.sin_family = AF_INET;
-  serv_addr.sin_port = htons(PORT);
-
-  if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
-    std::cerr << "Invalid address or Address not supported" << std::endl;
-    return -1;
-  }
-
-  if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-    std::cerr << "Connection failed" << std::endl;
-    return -1;
-  }
-
-  while (true) {
-    char buffer[1024] = {0};
-    ssize_t valread = read(sock, buffer, sizeof(buffer) - 1);
-    if (valread > 0) {
-      std::cout << buffer;
-      std::string message(buffer);
-
-      if (message.find("Enter your turn:") != std::string::npos) {
-        std::string position;
-        std::cin >> position;
-
-        send(sock, position.c_str(), position.size(), 0);
-      }
-
-      if (message.find("The server has disconnected.") != std::string::npos) {
-        break;
-      }
+    if (arg == "--connect" && i + 1 < argc) {
+      std::string address = argv[i + 1];
+      auto colon_pos = address.find(':');
+      ip_address = address.substr(0, colon_pos);
+      port = std::stoi(address.substr(colon_pos + 1));
+      break;
     }
   }
+  return std::make_pair(ip_address, port);
+}
+
+int main(int argc, char* argv[]) {
+  std::pair<std::string, int> address = ParseIpAndPort(argc, argv);
+  std::string ip = address.first;
+  int port = address.second;
+
+  Client client(ip, port);
+  client.CreateConnection();
+  client.StartReceivingData();
 }
