@@ -15,10 +15,10 @@ Field::Field() {
 }
 
 void Field::ChangeSymbol() {
-  if (current_symbol == 'X') {
-    current_symbol = '0';
+  if (current_symbol == Symbol::cross) {
+    current_symbol = Symbol::nought;
   } else {
-    current_symbol = 'X';
+    current_symbol = Symbol::cross;
   }
 }
 
@@ -28,7 +28,7 @@ bool Field::IsMovePossible(int position) {
   if (position < 0 || position > 8) {
     return false;
   }
-  return current_field[position] != 'X' && current_field[position] != '0';
+  return current_field[position] != Symbol::cross && current_field[position] != Symbol::nought;
 }
 
 void Field::MakeMove(int position) {
@@ -38,7 +38,7 @@ void Field::MakeMove(int position) {
 }
 
 bool Field::IsCombinationWins(std::vector<int>& combination) {
-  if (current_field[combination[0]] != 'X' && current_field[combination[0]] != '0') {
+  if (current_field[combination[0]] != Symbol::cross && current_field[combination[0]] != Symbol::nought) {
     return false;
   }
   return current_field[combination[0]] == current_field[combination[1]] && current_field[combination[2]] == current_field[combination[1]];
@@ -55,7 +55,7 @@ bool Field::IsWinning() {
 
 bool Field::IsEnd() {
   for (int i = 0; i < 9; ++i) {
-    if (current_field[i] != 'X' && current_field[i] != '0') {
+    if (current_field[i] != Symbol::cross && current_field[i] != Symbol::nought) {
       return false;
     }
   }
